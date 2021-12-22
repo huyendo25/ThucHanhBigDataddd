@@ -1,3 +1,3 @@
 # ThucHanhBigData
 
-Tạo ứng dụng Todo ap
+Tạo ứng dụng Todo app
