@@ -1,11 +1,9 @@
 from pickle import NONE
-
 from cv2 import fastNlMeansDenoising
 from flask import Flask, flash, request, redirect, url_for , jsonify , send_file ,send_from_directory
 from werkzeug.utils import secure_filename
 from crm import *
 import json
-import time
 
 class DataModel:
     def __init__(self, result, message, item):
@@ -41,38 +39,36 @@ dic_new_text = {}
 def upload_file():
     error = None
     data = None
-    time_t = time.time()
     sess_id = request.args.get('sess_id')
     if request.method == 'POST':
-        if 'file' not in request.files:
-            flash('No file part')
-        file = request.files['file']
-        if file.filename == '':
-            flash('No selected file')
-        if file and allowed_file(file.filename):
+        try:
+            file = request.files['file']
+        except:
+            item = {"sess_id": sess_id}
+            data = DataModel(False, " Chưa tải tệp tin! ", item)
+            if error is not None:
+                error = vars(error)
+            if data is not None:
+                data = vars(data)
+            response = ResponseModel(data, error)
+        else:
             filename = secure_filename(file.filename)
-            print('filename - ',filename)
             file_name, file_end = os.path.splitext(filename)
             path_file_name = file_name + '_' + sess_id
             path_file = os.path.join(app.config['upload_folder'], path_file_name )
             if not os.path.exists(path_file):
                 os.makedirs(path_file)
             input_file[sess_id] = os.path.join(path_file, filename)
-            print('save_path - ',input_file[sess_id])
             file.save(input_file[sess_id])
             img_org_base64 = start(input_file[sess_id])
-
             item = {"sess_id": sess_id , "image" : img_org_base64}
-            print(type(img_org_base64))
             data = DataModel(True, " Xử lí file thành công ", item)
-    time_s = time.time()
-    print("Time upload file : {}".format(time_s-time_t))
-    if error is not None:
-        error = vars(error)
-    if data is not None:
-        data = vars(data)
-    response = ResponseModel(data, error)
-    return json.dumps(vars(response))
+            if error is not None:
+                error = vars(error)
+            if data is not None:
+                data = vars(data)
+            response = ResponseModel(data, error)
+        return json.dumps(vars(response))
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
@@ -86,6 +82,8 @@ def search():
         except:
             item = {"sess_id": sess_id}
             data = DataModel(False, " Không tìm thấy tập tin! ", item)
+            if key == "":
+                data = DataModel(False, " Hãy nhập từ muốn thay thế! ", item)
             if error is not None:
                 error = vars(error)
             if data is not None:
