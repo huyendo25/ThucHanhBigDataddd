@@ -1,4 +1,6 @@
 from pickle import NONE
+
+from cv2 import fastNlMeansDenoising
 from flask import Flask, flash, request, redirect, url_for , jsonify , send_file ,send_from_directory
 from werkzeug.utils import secure_filename
 from crm import *
@@ -82,25 +84,30 @@ def search():
         try:
             img_base64, countKey = stage2(input_file[sess_id],key)
         except:
-            print("Không tìm thấy tập tin!")
-        else:
-            if countKey == 0:
-                item = {"sess_id": sess_id, "number_img": countKey}
-                data = DataModel(True, " Không có chuỗi khớp ", item)
-                if error is not None:
-                    error = vars(error)
-                if data is not None:
-                    data = vars(data)
-                response = ResponseModel(data, error)
-                return json.dumps(vars(response))
-            else:
-                item = {"sess_id": sess_id, "number_img": countKey, "image":  img_base64}
-                data = DataModel(True, " Ảnh trả về ", item)
+            item = {"sess_id": sess_id}
+            data = DataModel(False, " Không tìm thấy tập tin! ", item)
             if error is not None:
                 error = vars(error)
             if data is not None:
                 data = vars(data)
             response = ResponseModel(data, error)
+        else:
+            if countKey == 0:
+                item = {"sess_id": sess_id, "number_img": countKey}
+                data = DataModel(False, " Không có chuỗi khớp ", item)
+                if error is not None:
+                    error = vars(error)
+                if data is not None:
+                    data = vars(data)
+                response = ResponseModel(data, error)
+            else:
+                item = {"sess_id": sess_id, "number_img": countKey, "image":  img_base64}
+                data = DataModel(True, " Ảnh trả về ", item)
+                if error is not None:
+                    error = vars(error)
+                if data is not None:
+                    data = vars(data)
+                response = ResponseModel(data, error)
         return json.dumps(vars(response))
 
 @app.route('/replace_file', methods=['GET', 'POST'])
