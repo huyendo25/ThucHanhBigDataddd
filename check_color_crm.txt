@@ -1,0 +1,27 @@
+import cv2
+import numpy as np
+
+
+image = cv2.imread("/content/only_ye.png")                
+# Convert BGR to HSV
+hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+
+# define yellow color range
+lower_ye = np.array([22, 93, 0], dtype="uint8")
+upper_ye = np.array([45, 255, 255], dtype="uint8")
+
+# define red color range
+lower_red = np.array([160,100,20], dtype="uint8")
+upper_red = np.array([179,255,255], dtype="uint8")
+                     
+# Threshold the HSV image to get yellow colors
+ye_mask = cv2.inRange(image, lower_ye, upper_ye)
+red_mask = cv2.inRange(image, lower_red, upper_red)
+
+pixels_1 = cv2.countNonZero(ye_mask)
+pixels_2 = cv2.countNonZero(red_mask)
+
+if pixels_1 > 0 and pixels_2 > 0:
+    print("yellow and red exist")
+else: 
+    print("not found")
