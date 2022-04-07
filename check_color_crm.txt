@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-#git push https://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@github.com/huyendo25/crm.git
+#git push https://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@github.com/huyendo25/crm.git
 
 image = cv2.imread("/content/only_ye.png")                
 # Convert BGR to HSV
