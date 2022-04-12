@@ -2,6 +2,17 @@ import cv2
 import numpy as np
 #git push https://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@github.com/huyendo25/crm.git
 
+"workbench.colorTheme": "GitHub Dark Default",
+    "sync.autoDownload": true,
+    "sync.autoUpload": true,
+    "sync.forceDownload": true,
+    "sync.forceUpload": true,
+    "sync.quietSync": false,
+    "sync.removeExtensions": true,
+    "sync.syncExtensions": true,
+    "notebook.lineNumbers": "on",
+    "sync.gist": "6945a809808e0d0f51fd9d280d2d2fab"
+
 image = cv2.imread("/content/only_ye.png")                
 # Convert BGR to HSV
 hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
